@@ -7,7 +7,7 @@ class ApiService {
 
   // Replace with your local IP if running on minimal emulator/web
   // For web (localhost)
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://riskhan-backend-production.up.railway.app';
 
   ApiService() {
     _dio.options.baseUrl = baseUrl;

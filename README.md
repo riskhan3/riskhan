@@ -1,75 +1,75 @@
-# 📱 IndiKhan - Flutter App
+# 📱 IndiKhan - Aplikasi Flutter
 
 Aplikasi mobile untuk pelanggan ISP IndiKhan. Memungkinkan pelanggan untuk melihat paket internet, membayar tagihan, dan membuat tiket dukungan.
 
-## 🛠️ Tech Stack
+## 🛠️ Teknologi yang Digunakan
 
 - **Framework:** Flutter 3.10+
-- **State Management:** StatefulWidget (built-in)
+- **Manajemen State:** StatefulWidget (bawaan)
 - **HTTP Client:** Dio
-- **Storage:** Flutter Secure Storage
+- **Penyimpanan:** Flutter Secure Storage
 - **Font:** Manrope (Google Fonts)
 
-## 🏗️ System Architecture
+## 🏗️ Arsitektur Sistem
 
-### Overview
-IndiKhan follows a Clean Architecture-inspired layered structure to ensure scalability, maintainability, and testability.
+### Ringkasan
+IndiKhan mengikuti struktur berlapis yang terinspirasi dari Clean Architecture untuk memastikan skalabilitas, kemudahan pemeliharaan, dan testabilitas.
 
-| Layer | Technology | Description |
+| Lapisan | Teknologi | Deskripsi |
 |-------|------------|-------------|
-| **Presentation** | Flutter (Dart) | UI rendering, Widgets, State Management |
-| **Logic/State** | StatefulWidget | Built-in ephemeral state management |
-| **Networking** | Dio | HTTP client for API communication |
-| **Local Storage** | Flutter Secure Storage | Secure persistence for tokens |
-| **Backend** | NestJS (Assumed) | RESTful API Service |
+| **Presentasi** | Flutter (Dart) | Rendering UI, Widget, Manajemen State |
+| **Logika/State** | StatefulWidget | Manajemen state ephemeral bawaan |
+| **Jaringan** | Dio | HTTP client untuk komunikasi API |
+| **Penyimpanan Lokal** | Flutter Secure Storage | Penyimpanan aman untuk token |
+| **Backend** | NestJS (Diasumsikan) | Layanan API RESTful |
 
-### High-Level Architecture
-The application communicates with a backend REST API via the `ApiService` class. It uses a token-based authentication system (JWT) where the token is persisted securely on the device.
+### Arsitektur Tingkat Tinggi
+Aplikasi berkomunikasi dengan backend REST API melalui kelas `ApiService`. Menggunakan sistem autentikasi berbasis token (JWT) di mana token disimpan secara aman di perangkat.
 
 ```mermaid
 graph TD
-    User[User] -->|Interacts| UI[Flutter UI Layer]
+    User[Pengguna] -->|Berinteraksi| UI[Layer UI Flutter]
     
-    subgraph "IndiKhan App"
-        UI -->|Events| Logic[Business Logic / State]
-        Logic -->|Data Requests| Service[API Service Layer]
-        Service -->|Persist Token| Storage[Secure Storage]
+    subgraph "Aplikasi IndiKhan"
+        UI -->|Event| Logic[Logika Bisnis / State]
+        Logic -->|Permintaan Data| Service[Layer Layanan API]
+        Service -->|Simpan Token| Storage[Penyimpanan Aman]
     end
     
-    subgraph "Backend Infrastructure"
-        Service -- HTTP/REST --> API[Backend API]
+    subgraph "Infrastruktur Backend"
+        Service -- HTTP/REST --> API[API Backend]
         API --> DB[(Database)]
     end
 ```
 
-### Navigation Flow
+### Alur Navigasi
 
 ```mermaid
 stateDiagram-v2
     [*] --> SplashScreen
     
-    state "Check Auth" as CheckAuth
+    state "Cek Autentikasi" as CheckAuth
     SplashScreen --> CheckAuth
     
-    CheckAuth --> OnboardingScreen : No Token / First Time
-    CheckAuth --> LoginScreen : Token Expired / Logout
-    CheckAuth --> DashboardScreen : Valid Token
+    CheckAuth --> OnboardingScreen : Tidak Ada Token / Baru
+    CheckAuth --> LoginScreen : Token Kedaluwarsa / Logout
+    CheckAuth --> DashboardScreen : Token Valid
     
-    OnboardingScreen --> LoginScreen : Get Started
+    OnboardingScreen --> LoginScreen : Mulai
     
     state LoginFlow {
         LoginScreen --> RegisterScreen : "Daftar Baru"
-        RegisterScreen --> LoginScreen : Success
-        LoginScreen --> DashboardScreen : Success
+        RegisterScreen --> LoginScreen : Sukses
+        LoginScreen --> DashboardScreen : Sukses
     }
     
     state DashboardScreen {
         [*] --> HomeTab
         
-        HomeTab --> PaymentScreen : "Pay Bill"
-        HomeTab --> ReportIssueScreen : "Support"
+        HomeTab --> PaymentScreen : "Bayar Tagihan"
+        HomeTab --> ReportIssueScreen : "Bantuan"
         
-        state "Bottom Navigation" as BottomNav {
+        state "Navigasi Bawah" as BottomNav {
             HomeTab
             UsageTab
             BillingTab
@@ -77,18 +77,18 @@ stateDiagram-v2
         }
     }
     
-    BillingTab --> PaymentScreen : Select Invoice
+    BillingTab --> PaymentScreen : Pilih Tagihan
     ProfileTab --> LoginScreen : Logout
 ```
 
-### Component Hierarchy
+### Hirarki Komponen
 
 ```mermaid
 graph TD
     App[IndiKhanApp] --> MaterialApp
     MaterialApp --> Splash[SplashScreen]
     
-    auth[Auth Features]
+    auth[Fitur Autentikasi]
     Splash --> Login[LoginScreen]
     Splash --> Onboard[OnboardingScreen]
     Login --> Register[RegisterScreen]
@@ -102,22 +102,22 @@ graph TD
         IndexedStack --> Profile[ProfileScreen]
     end
     
-    subgraph "Dashboard Widgets"
-        DashHome --> Header[Header Section]
-        DashHome --> HeroCard[Hero Status Card]
-        DashHome --> Speed[Speed Stats Row]
-        DashHome --> Actions[Quick Actions Grid]
-        DashHome --> Banner[Promo Banner]
+    subgraph "Widget Dashboard"
+        DashHome --> Header[Bagian Header]
+        DashHome --> HeroCard[Kartu Status Hero]
+        DashHome --> Speed[Baris Statistik Kecepatan]
+        DashHome --> Actions[Grid Aksi Cepat]
+        DashHome --> Banner[Banner Promo]
     end
     
-    subgraph "Shared Widgets"
+    subgraph "Widget Bersama"
         Login --> CustomButton[PrimaryButton]
         Login --> CustomInput[CustomTextField]
         HeroCard --> Progress[CircularProgressPainter]
     end
 ```
 
-## 📋 Prerequisites
+## 📋 Prasyarat
 
 Sebelum menjalankan proyek ini, pastikan Anda sudah menginstall:
 
@@ -127,15 +127,15 @@ Sebelum menjalankan proyek ini, pastikan Anda sudah menginstall:
    ```
    Download: https://docs.flutter.dev/get-started/install
 
-2. **Chrome** (untuk web development)
+2. **Chrome** (untuk pengembangan web)
 
-3. **Android Studio / VS Code** dengan Flutter extension
+3. **Android Studio / VS Code** dengan ekstensi Flutter
 
-## 🚀 Setup Instructions
+## 🚀 Petunjuk Instalasi
 
 ### 1. Clone Repository
 ```bash
-git clone <your-repo-url>
+git clone <url-repo-anda>
 cd indikhan
 ```
 
@@ -144,7 +144,7 @@ cd indikhan
 flutter pub get
 ```
 
-### 3. Configure Backend URL
+### 3. Konfigurasi URL Backend
 
 Edit file `lib/core/services/api_service.dart`:
 
@@ -162,125 +162,125 @@ static const String baseUrl = 'http://localhost:3000';
 # Jalankan di Chrome (Web)
 flutter run -d chrome
 
-# Jalankan di Android Emulator
+# Jalankan di Emulator Android
 flutter run -d android
 
-# Jalankan di iOS Simulator (macOS only)
+# Jalankan di Simulator iOS (khusus macOS)
 flutter run -d ios
 
-# List semua devices yang tersedia
+# Lihat semua perangkat yang tersedia
 flutter devices
 ```
 
-## 📁 Project Structure
+## 📁 Struktur Proyek
 
 ```
 indikhan/
 ├── lib/
 │   ├── core/
 │   │   ├── services/
-│   │   │   └── api_service.dart    # HTTP client & API calls
+│   │   │   └── api_service.dart    # Klien HTTP & panggilan API
 │   │   ├── theme/
-│   │   │   ├── app_colors.dart     # Color palette
-│   │   │   ├── app_text_styles.dart # Typography
+│   │   │   ├── app_colors.dart     # Palet warna
+│   │   │   ├── app_text_styles.dart # Tipografi
 │   │   │   └── app_theme.dart      # ThemeData
-│   │   └── widgets/                # Reusable widgets
+│   │   └── widgets/                # Widget yang dapat digunakan kembali
 │   ├── features/
-│   │   ├── auth/                   # Login & Register
-│   │   ├── billing/                # Invoice & Payment
-│   │   ├── dashboard/              # Home screen
-│   │   ├── onboarding/             # Onboarding slides
-│   │   ├── profile/                # User profile
-│   │   ├── splash/                 # Splash screen
-│   │   └── support/                # Report issue
-│   └── main.dart                   # App entry point
-├── pubspec.yaml                    # Dependencies
+│   │   ├── auth/                   # Login & Daftar
+│   │   ├── billing/                # Tagihan & Pembayaran
+│   │   ├── dashboard/              # Layar Beranda
+│   │   ├── onboarding/             # Slide Pengenalan
+│   │   ├── profile/                # Profil Pengguna
+│   │   ├── splash/                 # Layar Splash
+│   │   └── support/                # Lapor Masalah
+│   └── main.dart                   # Titik masuk aplikasi
+├── pubspec.yaml                    # Dependensi
 └── README.md
 ```
 
-## 🎨 Design System
+## 🎨 Sistem Desain
 
-IndiKhan uses a specific design system to maintain visual consistency across the application. The design is "Dark Themed" with Slate backgrounds and Teal/Emerald accents.
+IndiKhan menggunakan sistem desain khusus untuk menjaga konsistensi visual di seluruh aplikasi. Desain ini menggunakan "Dark Theme" dengan latar belakang Slate dan aksen Teal/Emerald.
 
-### Color Palette
+### Palet Warna
 
-The color system is defined in `AppColors` (`lib/core/theme/app_colors.dart`).
+Sistem warna didefinisikan di `AppColors` (`lib/core/theme/app_colors.dart`).
 
-#### Primary Colors
-| Name | Hex | Usage |
+#### Warna Utama
+| Nama | Hex | Penggunaan |
 |------|-----|-------|
-| **Primary** | `#0D968B` | Main brand color, buttons, active states |
-| **Primary Light** | `#2DD4BF` | Gradients, highlights |
-| **Primary Dark** | `#0F766E` | Pressed states |
+| **Primary** | `#0D968B` | Warna merek utama, tombol, status aktif |
+| **Primary Light** | `#2DD4BF` | Gradien, sorotan |
+| **Primary Dark** | `#0F766E` | Status ditekan |
 
-#### Backgrounds (Slate)
-Used for creating depth in the dark theme.
+#### Latar Belakang (Slate)
+Digunakan untuk menciptakan kedalaman pada tema gelap.
 
-| Name | Hex | Usage |
+| Nama | Hex | Penggunaan |
 |------|-----|-------|
-| **Slate 900** | `#0F172A` | Main App Background |
-| **Slate 800** | `#1E293B` | Cards, Bottom Sheets |
-| **Slate 700** | `#334155` | Borders, Dividers |
+| **Slate 900** | `#0F172A` | Latar Belakang Utama Aplikasi |
+| **Slate 800** | `#1E293B` | Kartu, Bottom Sheets |
+| **Slate 700** | `#334155` | Border, Pembatas |
 
-#### Status Colors
-| Name | Hex | Usage |
+#### Warna Status
+| Nama | Hex | Penggunaan |
 |------|-----|-------|
-| **Success** | `#22C55E` | Active, Paid, Online |
-| **Error** | `#EF4444` | Overdue, Error, Offline |
-| **Warning** | `#EAB308` | Pending, Alert |
-| **Info** | `#3B82F6` | Information |
+| **Success** | `#22C55E` | Aktif, Lunas, Online |
+| **Error** | `#EF4444` | Terlambat, Error, Offline |
+| **Warning** | `#EAB308` | Menunggu, Peringatan |
+| **Info** | `#3B82F6` | Informasi |
 
-### Typography
+### Tipografi
 
-The application uses **Manrope** from Google Fonts.
+Aplikasi ini menggunakan **Manrope** dari Google Fonts.
 
-| Style | Size | Weight | Usage |
+| Gaya | Ukuran | Bobot | Penggunaan |
 |-------|------|--------|-------|
-| **H1** | 28px | Bold | Main Page Titles |
-| **H2** | 24px | Bold | Section Headers |
-| **H3** | 20px | SemiBold | Card Titles |
-| **H4** | 18px | Bold | Sub-sections |
-| **Body Large** | 16px | Normal | Important text |
-| **Body** | 14px | Normal | Default text |
-| **Caption** | 12px | Normal | Hints, metadata |
+| **H1** | 28px | Bold | Judul Halaman Utama |
+| **H2** | 24px | Bold | Header Bagian |
+| **H3** | 20px | SemiBold | Judul Kartu |
+| **H4** | 18px | Bold | Sub-bagian |
+| **Body Large** | 16px | Normal | Teks penting |
+| **Body** | 14px | Normal | Teks default |
+| **Caption** | 12px | Normal | Petunjuk, metadata |
 
-## 🔗 Backend Integration & API
+## 🔗 Integrasi Backend & API
 
-Aplikasi ini membutuhkan **indikhan-backend** untuk berjalan. Pastikan backend sudah setup dan running sebelum menggunakan aplikasi.
+Aplikasi ini membutuhkan **indikhan-backend** untuk berjalan. Pastikan backend sudah disiapkan dan berjalan sebelum menggunakan aplikasi.
 
 ```bash
 # Clone backend
-git clone <backend-repo-url>
+git clone <url-repo-backend>
 cd indikhan-backend
 npm install
 npm run start:dev
 ```
 
-### API Documentation
+### Dokumentasi API
 
-The application interfaces with the backend services using `Dio`.
+Aplikasi berinteraksi dengan layanan backend menggunakan `Dio`.
 
-**Base URL:**
+**URL Dasar:**
 - Development: `http://localhost:3000`
 - Production: `https://riskhan-backend-production.up.railway.app`
 
-#### Authentication (`/auth`)
-- **Login**: `POST /auth/login` (Body: email, password) → Returns JWT
-- **Register**: `POST /auth/register` (Body: name, email, password, phone, address)
-- **Get Profile**: `GET /auth/profile` (Auth required)
+#### Autentikasi (`/auth`)
+- **Login**: `POST /auth/login` (Body: email, password) → Mengembalikan JWT
+- **Daftar**: `POST /auth/register` (Body: nama, email, password, telepon, alamat)
+- **Lihat Profil**: `GET /auth/profile` (Wajib Auth)
 
-#### Billing (`/billing`)
-- **Get Invoices**: `GET /billing/invoices` (Auth required)
+#### Tagihan (`/billing`)
+- **Lihat Tagihan**: `GET /billing/invoices` (Wajib Auth)
 
-#### Tickets (`/tickets`)
-- **Get Tickets**: `GET /tickets` (Auth required)
-- **Create Ticket**: `POST /tickets` (Body: subject, description, category)
+#### Tiket (`/tickets`)
+- **Lihat Tiket**: `GET /tickets` (Wajib Auth)
+- **Buat Tiket**: `POST /tickets` (Body: subjek, deskripsi, kategori)
 
-## 🔧 Troubleshooting
+## 🔧 Pemecahan Masalah
 
 ### Error: Connection refused to backend
-- Pastikan backend sudah running di `http://localhost:3000`
-- Untuk Android Emulator, gunakan `http://10.0.2.2:3000`
+- Pastikan backend sudah berjalan di `http://localhost:3000`
+- Untuk Emulator Android, gunakan `http://10.0.2.2:3000`
 
 ### Error: Flutter SDK not found
 ```bash

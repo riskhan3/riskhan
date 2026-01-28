@@ -10,6 +10,16 @@ Aplikasi mobile untuk pelanggan ISP IndiKhan. Memungkinkan pelanggan untuk melih
 - **Storage:** Flutter Secure Storage
 - **Font:** Manrope (Google Fonts)
 
+## 📚 Documentation
+
+Detailed documentation is available in the `docs/` directory:
+
+- [**System Architecture**](docs/ARCHITECTURE.md) - High-level overview and diagrams.
+- [**API Documentation**](docs/API.md) - Backend endpoints and data models.
+- [**Design System**](docs/DESIGN_SYSTEM.md) - Colors, typography, and UI guidelines.
+- [**Component Hierarchy**](docs/diagrams/component_hierarchy.md) - Widget tree structure.
+- [**Navigation Flow**](docs/diagrams/navigation_flow.md) - Screen transition diagram.
+
 ## 📋 Prerequisites
 
 Sebelum menjalankan proyek ini, pastikan Anda sudah menginstall:

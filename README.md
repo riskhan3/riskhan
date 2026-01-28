@@ -10,15 +10,112 @@ Aplikasi mobile untuk pelanggan ISP IndiKhan. Memungkinkan pelanggan untuk melih
 - **Storage:** Flutter Secure Storage
 - **Font:** Manrope (Google Fonts)
 
-## 📚 Documentation
+## 🏗️ System Architecture
 
-Detailed documentation is available in the `docs/` directory:
+### Overview
+IndiKhan follows a Clean Architecture-inspired layered structure to ensure scalability, maintainability, and testability.
 
-- [**System Architecture**](docs/ARCHITECTURE.md) - High-level overview and diagrams.
-- [**API Documentation**](docs/API.md) - Backend endpoints and data models.
-- [**Design System**](docs/DESIGN_SYSTEM.md) - Colors, typography, and UI guidelines.
-- [**Component Hierarchy**](docs/diagrams/component_hierarchy.md) - Widget tree structure.
-- [**Navigation Flow**](docs/diagrams/navigation_flow.md) - Screen transition diagram.
+| Layer | Technology | Description |
+|-------|------------|-------------|
+| **Presentation** | Flutter (Dart) | UI rendering, Widgets, State Management |
+| **Logic/State** | StatefulWidget | Built-in ephemeral state management |
+| **Networking** | Dio | HTTP client for API communication |
+| **Local Storage** | Flutter Secure Storage | Secure persistence for tokens |
+| **Backend** | NestJS (Assumed) | RESTful API Service |
+
+### High-Level Architecture
+The application communicates with a backend REST API via the `ApiService` class. It uses a token-based authentication system (JWT) where the token is persisted securely on the device.
+
+```mermaid
+graph TD
+    User[User] -->|Interacts| UI[Flutter UI Layer]
+    
+    subgraph "IndiKhan App"
+        UI -->|Events| Logic[Business Logic / State]
+        Logic -->|Data Requests| Service[API Service Layer]
+        Service -->|Persist Token| Storage[Secure Storage]
+    end
+    
+    subgraph "Backend Infrastructure"
+        Service -- HTTP/REST --> API[Backend API]
+        API --> DB[(Database)]
+    end
+```
+
+### Navigation Flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> SplashScreen
+    
+    state "Check Auth" as CheckAuth
+    SplashScreen --> CheckAuth
+    
+    CheckAuth --> OnboardingScreen : No Token / First Time
+    CheckAuth --> LoginScreen : Token Expired / Logout
+    CheckAuth --> DashboardScreen : Valid Token
+    
+    OnboardingScreen --> LoginScreen : Get Started
+    
+    state LoginFlow {
+        LoginScreen --> RegisterScreen : "Daftar Baru"
+        RegisterScreen --> LoginScreen : Success
+        LoginScreen --> DashboardScreen : Success
+    }
+    
+    state DashboardScreen {
+        [*] --> HomeTab
+        
+        HomeTab --> PaymentScreen : "Pay Bill"
+        HomeTab --> ReportIssueScreen : "Support"
+        
+        state "Bottom Navigation" as BottomNav {
+            HomeTab
+            UsageTab
+            BillingTab
+            ProfileTab
+        }
+    }
+    
+    BillingTab --> PaymentScreen : Select Invoice
+    ProfileTab --> LoginScreen : Logout
+```
+
+### Component Hierarchy
+
+```mermaid
+graph TD
+    App[IndiKhanApp] --> MaterialApp
+    MaterialApp --> Splash[SplashScreen]
+    
+    auth[Auth Features]
+    Splash --> Login[LoginScreen]
+    Splash --> Onboard[OnboardingScreen]
+    Login --> Register[RegisterScreen]
+    Login --> Dashboard[DashboardScreen]
+    
+    subgraph "Dashboard & Tabs"
+        Dashboard --> IndexedStack
+        IndexedStack --> DashHome[DashboardHome]
+        IndexedStack --> Usage[UsageScreen]
+        IndexedStack --> Billing[BillingScreen]
+        IndexedStack --> Profile[ProfileScreen]
+    end
+    
+    subgraph "Dashboard Widgets"
+        DashHome --> Header[Header Section]
+        DashHome --> HeroCard[Hero Status Card]
+        DashHome --> Speed[Speed Stats Row]
+        DashHome --> Actions[Quick Actions Grid]
+        DashHome --> Banner[Promo Banner]
+    end
+    
+    subgraph "Shared Widgets"
+        Login --> CustomButton[PrimaryButton]
+        Login --> CustomInput[CustomTextField]
+        HeroCard --> Progress[CircularProgressPainter]
+    end
+```
 
 ## 📋 Prerequisites
 
@@ -103,21 +200,81 @@ indikhan/
 
 ## 🎨 Design System
 
-### Color Palette (Dark Theme)
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Primary | `#0D968B` | Main accent, buttons |
-| Slate 900 | `#0F172A` | Background |
-| Slate 800 | `#1E293B` | Cards, surfaces |
-| Slate 400 | `#94A3B8` | Secondary text |
-| Success | `#22C55E` | Active status, paid |
-| Error | `#EF4444` | Overdue, unpaid |
+IndiKhan uses a specific design system to maintain visual consistency across the application. The design is "Dark Themed" with Slate backgrounds and Teal/Emerald accents.
+
+### Color Palette
+
+The color system is defined in `AppColors` (`lib/core/theme/app_colors.dart`).
+
+#### Primary Colors
+| Name | Hex | Usage |
+|------|-----|-------|
+| **Primary** | `#0D968B` | Main brand color, buttons, active states |
+| **Primary Light** | `#2DD4BF` | Gradients, highlights |
+| **Primary Dark** | `#0F766E` | Pressed states |
+
+#### Backgrounds (Slate)
+Used for creating depth in the dark theme.
+
+| Name | Hex | Usage |
+|------|-----|-------|
+| **Slate 900** | `#0F172A` | Main App Background |
+| **Slate 800** | `#1E293B` | Cards, Bottom Sheets |
+| **Slate 700** | `#334155` | Borders, Dividers |
+
+#### Status Colors
+| Name | Hex | Usage |
+|------|-----|-------|
+| **Success** | `#22C55E` | Active, Paid, Online |
+| **Error** | `#EF4444` | Overdue, Error, Offline |
+| **Warning** | `#EAB308` | Pending, Alert |
+| **Info** | `#3B82F6` | Information |
 
 ### Typography
-- **Font:** Manrope (Google Fonts)
-- **Headings:** Bold, 20-28px
-- **Body:** Regular, 14-16px
-- **Caption:** Regular, 10-12px
+
+The application uses **Manrope** from Google Fonts.
+
+| Style | Size | Weight | Usage |
+|-------|------|--------|-------|
+| **H1** | 28px | Bold | Main Page Titles |
+| **H2** | 24px | Bold | Section Headers |
+| **H3** | 20px | SemiBold | Card Titles |
+| **H4** | 18px | Bold | Sub-sections |
+| **Body Large** | 16px | Normal | Important text |
+| **Body** | 14px | Normal | Default text |
+| **Caption** | 12px | Normal | Hints, metadata |
+
+## 🔗 Backend Integration & API
+
+Aplikasi ini membutuhkan **indikhan-backend** untuk berjalan. Pastikan backend sudah setup dan running sebelum menggunakan aplikasi.
+
+```bash
+# Clone backend
+git clone <backend-repo-url>
+cd indikhan-backend
+npm install
+npm run start:dev
+```
+
+### API Documentation
+
+The application interfaces with the backend services using `Dio`.
+
+**Base URL:**
+- Development: `http://localhost:3000`
+- Production: `https://riskhan-backend-production.up.railway.app`
+
+#### Authentication (`/auth`)
+- **Login**: `POST /auth/login` (Body: email, password) → Returns JWT
+- **Register**: `POST /auth/register` (Body: name, email, password, phone, address)
+- **Get Profile**: `GET /auth/profile` (Auth required)
+
+#### Billing (`/billing`)
+- **Get Invoices**: `GET /billing/invoices` (Auth required)
+
+#### Tickets (`/tickets`)
+- **Get Tickets**: `GET /tickets` (Auth required)
+- **Create Ticket**: `POST /tickets` (Body: subject, description, category)
 
 ## 🔧 Troubleshooting
 
@@ -134,26 +291,4 @@ export PATH="$PATH:/path/to/flutter/bin"
 ### Error: Dependencies outdated
 ```bash
 flutter pub upgrade
-```
-
-## 📱 Screens
-
-1. **Splash Screen** - Logo & loading
-2. **Onboarding** - 3 intro slides
-3. **Login/Register** - Authentication
-4. **Dashboard** - Package info, speed stats, quick actions
-5. **Billing** - Invoice list & payment
-6. **Profile** - User info & settings
-7. **Support** - Report issue form
-
-## 🔗 Backend Integration
-
-Aplikasi ini membutuhkan **indikhan-backend** untuk berjalan. Pastikan backend sudah setup dan running sebelum menggunakan aplikasi.
-
-```bash
-# Clone backend
-git clone <backend-repo-url>
-cd indikhan-backend
-npm install
-npm run start:dev
 ```

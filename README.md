@@ -10,6 +10,16 @@ Aplikasi mobile untuk pelanggan ISP IndiKhan. Memungkinkan pelanggan untuk melih
 - **Penyimpanan:** Flutter Secure Storage
 - **Font:** Manrope (Google Fonts)
 
+## 📸 Tangkapan Layar
+
+| Login | Register | Profil Digital |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/login.jpg" width="200"/> | <img src="assets/screenshots/register.jpg" width="200"/> | <img src="assets/screenshots/digital_id.jpg" width="200"/> |
+
+| Detail Profil | Tagihan |
+|:---:|:---:|
+| <img src="assets/screenshots/profile_details.jpg" width="200"/> | <img src="assets/screenshots/billing.jpg" width="200"/> |
+
 ## 🏗️ Arsitektur Sistem
 
 ### Ringkasan
